@@ -1,0 +1,1 @@
+{"name":"Local: G","url":"/home/oiocha/workspace/2025_contest/251018/Sejun/G.cpp","tests":[{"id":1760822921435,"input":"2\n0 7\n7 3\n7 0","output":""},{"id":1760822926340,"input":"2\n0 7\n7 3\n3 9","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/oiocha/workspace/2025_contest/251018/Sejun/G.cpp","group":"local","local":true}
