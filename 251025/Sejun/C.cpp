@@ -18,23 +18,11 @@ using pll=pair<ll,ll>;
 #define MOD 998244353
 #define INF 1000000007 
 
-array<ll,3> datas[N]; // x,y,idx
-ll value[N];
-
-int left_idx[N], right_idx[N];
-ll x;
-bool compare_left(array<ll,3> a, array<ll,3> b){
-    return b[0]*a[1]-b[1]*a[0]>0;
-}
-
-bool compare_right(array<ll,3> a, array<ll,3> b){
-    return (b[0]-x)*a[1]-b[1]*(a[0]-x)<0;
-}
-
-
+int datas[N];
+pii pos[N];
 class segtree{
 public:	
-	ll seg[1<<19];
+	int seg[1<<20];
 	int info;
 	segtree(){}
 	segtree(int n){}
@@ -61,9 +49,9 @@ public:
 		seg[idx]=(seg[2*idx]+seg[2*idx+1]); // Modify
 	}
 
-	long long find_seg(int idx, int l, int r, int t_l, int t_r){
+	int find_seg(int idx, int l, int r, int t_l, int t_r){
 		if(t_l<=l && r<=t_r) return seg[idx];
-		long long mid=(l+r)>>1, ans=0;
+		int mid=(l+r)>>1, ans=0;
 		if(t_l<=mid) ans=(ans+find_seg(2*idx,l,mid,t_l,t_r)); // Modify
 		if(t_r>mid) ans=(ans+find_seg(2*idx+1,mid+1,r,t_l,t_r)); // Modify
 		return ans;
@@ -72,50 +60,23 @@ public:
 
 segtree seg;
 
+
 void Solve(int tt){
-    ll n;
-    cin>>n>>x;
+    int n;
+    cin>>n;
+    rng(i,0,n-1) cin>>datas[i];
+    rng(i,0,n-1) pos[i]={datas[i],i};
+    sort(pos,pos+n);
+    ll res=0;
+    seg.build_seg(1,0,n-1);
     rng(i,0,n-1){
-        cin>>datas[i][0]>>datas[i][1];
-        datas[i][2]=i;
-        cin>>value[i];
+        ll idx=pos[i].se;
+        ll ldist=idx - seg.find_seg(1,0,n-1,0,idx);
+        ll rdist=n-1-idx - seg.find_seg(1,0,n-1,idx,n-1);
+        res+=min(ldist,rdist);
+        seg.update_seg(1,0,n-1,idx,1);
     }
-    sort(datas,datas+n,compare_left);
-    rng(i,0,n-1) left_idx[i]=datas[i][2];
-    sort(datas,datas+n,compare_right);
-    rng(i,0,n-1) right_idx[i]=datas[i][2];
-
-    vector<int> ls(n), rs(n);
-
-    for(int i = 0; i < n; i ++) {
-        ls[left_idx[i]] = i;
-        // cout << left_idx[i] <<  " ";
-    }
-    // cout << "\n";
-    
-    for(int i = 0; i < n; i ++) {
-        rs[right_idx[i]] = i;
-        // cout << right_idx[i] <<  " ";
-    }
-    // cout << "\n";
-    
-    vector<array<int,3>> vt;
-
-    for(int i = 0; i < n; i ++) {
-        vt.push_back({-ls[i], rs[i], i});
-    }
-
-    sort(vt.begin(),vt.end());
-    seg.build_seg(1, 0, n+1);
-    vector<long long> ans(n);
-    for(auto[a,b,i]: vt) {
-        ans[i] = seg.find_seg(1, 0, n+1, b, n);
-        seg.update_seg(1, 0, n+1, b, value[i]);
-    }
-
-    for(auto i: ans) {
-        cout << i << "\n";
-    }
+    cout<<res<<'\n';
 
 }
 
