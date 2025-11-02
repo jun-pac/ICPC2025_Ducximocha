@@ -11,9 +11,9 @@ using namespace std;
 string s;
 int g[N+1], temp_g[N];
 int t; 
-int sa[N], order[N]; 
+int sa[N], order[N]; // order[i]: position of suffix [i, ..., N-1] in the sorted suffix array
 
-int LCP[N];
+int LCP[N]; // length of the prefix overlap between i th and i-1 th suffix (in the sorted suffix array) -> You should use LCP[order[i]] to access LCP value of suffix starts ar index i in the given string.
 
 bool compare(int i, int j){
     if(g[i]==g[j]) return g[i+t]<g[j+t];
