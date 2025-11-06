@@ -519,7 +519,7 @@ struct CHT {
 
         // can change to binary search here to avoid condition of increasing X.
 
-        while (ptr + 1 < (int)hull.size() && hull[ptr + 1].eval(x) >= hull[ptr].eval(x)) {
+        while(ptr+1<(int)hull.size()&&hull[ptr + 1].eval(x)>=hull[ptr].eval(x)){
             ptr++;
         }
         return hull[ptr].eval(x);
@@ -2331,6 +2331,16 @@ pair<int,int> rotating_calipers(int sz_hull){
 \end{minted}
 
 \section{Miscellaneous}
+\subsection{Optimization Command}
+\begin{minted}{cpp}
+// optimization "O1"
+#pragma GCC optimize("O1")
+
+// ?
+__attribute__((optimize("Ofast,unroll-loops"),target("avx,avx2,fma")))
+\end{minted}
+
+
 \subsection{Mathematics}
 \paragraph{Green's Theorem} Let $C$ be a positively oriented, piecewise smooth, simple closed curve in a plane. Then 
 \[
@@ -2365,6 +2375,10 @@ x = V - E + F
 \]
 where V = vertices, E = edges, F = faces
 
+
+\paragraph{Kőnig's Theorem}
+For all Graphs, Minimum Cut = Max flow \\
+Only for \textbf{Bipartite Graphs}: Minimum Vertex Cover = Minimum Cut = Max flow (Kőnig's Theorem)
 
 \end{multicols}
 \end{document}
