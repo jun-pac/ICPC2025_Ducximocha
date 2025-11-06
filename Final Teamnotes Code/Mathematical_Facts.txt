@@ -1,0 +1,15 @@
+Pisano Period:
+
+Pisano Period refers to the period with which Fibonacci numbers mod some P repeats. In other words, for some modulus P, its Pisano Period is equal to some M such that F_a mod P = F_(a mod M) mod P for all a.
+for moduli of form 10^k, its 15 * 10^k
+
+Euler Characteristics:
+
+For a planar graph, the following identity holds:
+
+x = V - E + F
+
+V = verticies
+E = edges
+F = faces
+

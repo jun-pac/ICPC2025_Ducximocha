@@ -12,7 +12,6 @@ int ccw(pll A, pll B, pll C){
 bool intersect(pll A, pll B, pll C, pll D){
     return (ccw(A,C,D) != ccw(B,C,D)) && (ccw(A,B,C) != ccw(A,B,D));
 }
-    
 
 // Example
 #define fi first
