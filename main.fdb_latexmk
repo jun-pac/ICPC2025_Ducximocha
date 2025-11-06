@@ -1,10 +1,11 @@
 # Fdb version 3
-["pdflatex"] 1762414701 "/home/oiocha/workspace/Slower-than-python3/main.tex" "/home/oiocha/workspace/Slower-than-python3/main.pdf" "main" 1762414701
+["pdflatex"] 1762455912 "/home/oiocha/workspace/Slower-than-python3/main.tex" "/home/oiocha/workspace/Slower-than-python3/main.pdf" "main" 1762455912
   "/dev/null" 1762149144 0 d41d8cd98f00b204e9800998ecf8427e ""
   "/etc/texmf/web2c/texmf.cnf" 1756921378 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/oiocha/.texlive2019/texmf-var/web2c/pdftex/pdflatex.fmt" 1757419389 8257048 6ff3323b2cb23186eeabcc5ef630a661 ""
-  "/home/oiocha/workspace/Slower-than-python3/main.aux" 1762414701 8 a94a2480d3289e625eea47cd1b285758 ""
-  "/home/oiocha/workspace/Slower-than-python3/main.tex" 1762414700 58856 f6a578c932c2b7588d6ecdf44301df0a ""
+  "/home/oiocha/workspace/Slower-than-python3/main.aux" 1762455912 8 a94a2480d3289e625eea47cd1b285758 ""
+  "/home/oiocha/workspace/Slower-than-python3/main.tex" 1762455911 59685 886c6a273f1796e315117d0b13039c98 ""
+  "/home/oiocha/workspace/Slower-than-python3/main.toc" 0 -1 0 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -103,13 +104,13 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1760392667 4770781 1ed1abab22da9c3e2cc82e4db562318b ""
   "main.aux" 0 -1 0 "pdflatex"
   "main.pyg" 0 -1 0 "pdflatex"
-  "main.tex" 1762414700 58856 f6a578c932c2b7588d6ecdf44301df0a ""
+  "main.tex" 1762455911 59685 886c6a273f1796e315117d0b13039c98 ""
   "main.toc" 0 -1 0 "pdflatex"
   (generated)
-  "main.pyg"
-  "/home/oiocha/workspace/Slower-than-python3/main.pdf"
-  "/home/oiocha/workspace/Slower-than-python3/main.log"
   "main.aux"
   "main.pdf"
+  "main.pyg"
+  "/home/oiocha/workspace/Slower-than-python3/main.log"
   "main.log"
+  "/home/oiocha/workspace/Slower-than-python3/main.pdf"
   "main.toc"
