@@ -1,0 +1,62 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}bits/stdc++.h\PYGZgt{}}
+
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{c+cp}{\PYGZsh{}define NUM\PYGZus{}ALPHA 26}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{node}\PYG{p}{\PYGZob{}}
+\PYG{k}{public}\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{node}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{next}\PYG{p}{[}\PYG{n}{NUM\PYGZus{}ALPHA}\PYG{p}{]}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{n+nb}{NULL}\PYG{p}{,\PYGZcb{};}
+\PYG{+w}{    }\PYG{k+kt}{char}\PYG{+w}{ }\PYG{n}{val}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// 대부분 필요없다.}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{cnt}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// 여기서 끝나는 단어들의 개수}
+\PYG{+w}{    }\PYG{n}{node}\PYG{p}{()\PYGZob{}\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{node}\PYG{p}{(}\PYG{k+kt}{char}\PYG{+w}{ }\PYG{n}{c}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{val}\PYG{o}{=}\PYG{n}{c}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{trie}\PYG{p}{\PYGZob{}}
+\PYG{k}{public}\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{node}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{root}\PYG{o}{=}\PYG{+w}{ }\PYG{k}{new}\PYG{+w}{ }\PYG{n}{node}\PYG{p}{();}
+\PYG{+w}{    }\PYG{n}{trie}\PYG{p}{()\PYGZob{}\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{is\PYGZus{}s}\PYG{p}{(}\PYG{n}{string}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{is\PYGZus{}re}\PYG{p}{(}\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{insert\PYGZus{}s}\PYG{p}{(}\PYG{n}{string}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{insert\PYGZus{}re}\PYG{p}{(}\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{clear}\PYG{p}{()\PYGZob{}}\PYG{+w}{ }\PYG{c+c1}{// clear\PYGZus{}all}
+\PYG{+w}{        }\PYG{n}{clear\PYGZus{}re}\PYG{p}{(}\PYG{n}{root}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{NUM\PYGZus{}ALPHA}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{private}\PYG{o}{:}
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{is\PYGZus{}re}\PYG{p}{(}\PYG{n}{node}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{cur}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{string}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{idx}\PYG{o}{==}\PYG{n}{s}\PYG{p}{.}\PYG{n}{size}\PYG{p}{())}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{p}{((}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cnt}\PYG{p}{)}\PYG{o}{\PYGZgt{}=}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{        }\PYG{c+c1}{// 여기까지 왔으면 그냥 true해도 되지 않나?}
+\PYG{+w}{        }\PYG{c+c1}{// 처음에 들어올 때 때문인가}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{((}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{s}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{p}{])}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{false}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{is\PYGZus{}re}\PYG{p}{(}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{s}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{p}{],}\PYG{n}{idx}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{s}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{insert\PYGZus{}re}\PYG{p}{(}\PYG{n}{node}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{cur}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{string}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{idx}\PYG{o}{==}\PYG{n}{s}\PYG{p}{.}\PYG{n}{size}\PYG{p}{())\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{cnt}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{((}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{s}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{p}{])}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{p}{)}
+\PYG{+w}{            }\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{s}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{p}{]}\PYG{o}{=}\PYG{k}{new}\PYG{+w}{ }\PYG{n}{node}\PYG{p}{(}\PYG{n}{s}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]);}
+\PYG{+w}{        }\PYG{n}{insert\PYGZus{}re}\PYG{p}{(}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{s}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{l+s+sc}{\PYGZsq{}A\PYGZsq{}}\PYG{p}{],}\PYG{n}{idx}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{s}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{clear\PYGZus{}re}\PYG{p}{(}\PYG{n}{node}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{cur}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{NUM\PYGZus{}ALPHA}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{            }\PYG{k}{if}\PYG{p}{((}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{i}\PYG{p}{])}\PYG{o}{!=}\PYG{n+nb}{NULL}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{                }\PYG{n}{clear\PYGZus{}re}\PYG{p}{(}\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+\PYG{+w}{                }\PYG{k}{delete}\PYG{+w}{ }\PYG{n}{cur}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{next}\PYG{p}{[}\PYG{n}{i}\PYG{p}{];}
+\PYG{+w}{            }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{n}{trie}\PYG{+w}{ }\PYG{n}{tr}\PYG{p}{;}
+\end{Verbatim}

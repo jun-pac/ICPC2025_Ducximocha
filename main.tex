@@ -7,12 +7,12 @@
 \usepackage{fancyhdr}
 
 
-\title{2023 UCPC team note}
-\author{개는 훌륭하다}
-\date{July 2023}
+\title{2025 ICPC team note}
+\author{Slower than Python3}
+\date{Nov 2025}
 
 \pagestyle{fancy}
-\lhead{개는 훌륭하다}
+\lhead{Slower than Python3}
 \rhead{\thepage}
 
 \setlength{\columnseprule}{0.2pt}
@@ -24,6 +24,38 @@
 \begin{multicols}{2}
 \tableofcontents
 \section{Data Structure}
+
+
+\subsection{Fenwick Tree}
+\begin{minted}{cpp}
+
+#include <bits/stdc++.h>
+using namespace std;
+#define N 300030
+
+
+struct FenwickTree {
+    int bit[N];
+    int n=N;
+
+    int sum(int r) {
+        int ret = 0;
+        for (; r >= 0; r = (r & (r + 1)) - 1)
+            ret += bit[r];
+        return ret;
+    }
+
+    int sum(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+
+    void update(int idx, int delta) {
+        for (; idx < n; idx = idx | (idx + 1))
+            bit[idx] += delta;
+    }
+};
+\end{minted}
+
 \subsection{Segment Tree}
 \begin{minted}{cpp}
 // Segtree
@@ -155,34 +187,6 @@ public:
 lazy_seg s;
 \end{minted}
 
-\subsection{Lazy Count Tree}
-\begin{minted}{cpp}
-// Lazy count tree. Update down이 필요없는 아주 단순한 형태의 lazy_seg
-#include <iostream>
-using namespace std;
-
-long long seg[800000];
-
-void update_seg(int idx, int l, int r, int t_l, int t_r, 
-                long long val){
-    if(t_l<=l && r<=t_r){
-        seg[idx]+=val;
-        return;
-    }
-    int mid=(l+r)>>1;
-    if(t_l<=mid) update_seg(2*idx,l,mid,t_l,t_r,val);
-    if(t_r>mid) update_seg(2*idx+1,mid+1,r,t_l,t_r,val);
-}
-
-long long find_seg(int idx, int l, int r, int t_idx){
-    if(l==r) return seg[idx];
-    long long res=seg[idx];
-    int mid=(l+r)>>1;
-    if(t_idx<=mid) res=res+find_seg(2*idx,l,mid,t_idx);
-    if(t_idx>mid) res=res+find_seg(2*idx+1,mid+1,r,t_idx);
-    return res;
-}
-\end{minted}
 
 \subsection{Persistent Segment Tree}
 \begin{minted}{cpp}
@@ -283,56 +287,41 @@ private:
 PST p;
 \end{minted}
 
-\subsection{Union Find}
+\subsection{PBDS}
 \begin{minted}{cpp}
-// union_find
 #include <bits/stdc++.h>
 using namespace std;
 
-int parent[100000];
-int find(int idx){
-	if(idx==parent[idx]) return idx;
-	return parent[idx]=find(parent[idx]);
-}
-void c_union(int a, int b){
-	a=find(a), b=find(b);
-	parent[b]=a;
-}
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+#define ordered_set tree<int, null_type, less<int>, \
+rb_tree_tag,tree_order_statistics_node_update>
+
+// (Set 이름).order_of_key(NUM) : 
+// ordered_set 에서 NUM 보다 작은(미만의) 원소의 개수를 반환한다. 
+
+// (Set 이름).find_by_order(K) :
+// ordered_set 에서 (K+1)번째 원소가 있는 iterator 을 반환한다. (K가 0이면 1번째)
+
 \end{minted}
+
 
 \subsection{Mo's algorithm}
 \begin{minted}{cpp}
-#include <bits/stdc++.h>
-#define endl '\n'
-#define cediv(a,b) ((a)%(b)==0?((a)/(b)):((a)/(b))+1)
-#define fi first
-#define se second
-#define pb push_back
-
-using namespace std;
-
-typedef long long ll;
-typedef unsigned int ui;
-typedef unsigned long long ull;
-
-template<typename T>
-inline T umax(T &u, T v){return u = max(u, v);}
-template<typename T>
-inline T umin(T &u, T v){return u = min(u, v);}
-#define INF 1000000007
-
-int sqrtN;
+int sqrtN=400;
 
 class Query{
 public:
 	int idx, s, e;
 	bool operator < (Query &x){
 		if(s/sqrtN != x.s/sqrtN) return s/sqrtN < x.s/sqrtN;
-		return e < x.e;
+		return (e < x.e) ^ ((s/sqrtN)%2);
 	}
 };
-Query qs[1000000];
-int ans[1000000];
+
+Query qs[N];
+int ans[N];
 
 void go(int idx){
 
@@ -352,9 +341,9 @@ int main(){
     //ans[qs[0].idx] = ;
 
 	for(int i=1; i<q; i++){
-		while(s < qs[i].s) back(s++);
 		while(s > qs[i].s) go(--s);
-		while(e < qs[i].e) go(++e);
+        while(e < qs[i].e) go(++e);
+        while(s < qs[i].s) back(s++);
 		while(e > qs[i].e) back(e--);
         //ans[qs[i].idx] = ;
 	}
@@ -366,366 +355,179 @@ int main(){
 
 \subsection{HLD}
 \begin{minted}{cpp}
-// HLD
 #include <bits/stdc++.h>
-#define INF 1000000007
-#define N 200000
-
 using namespace std;
 
-vector<int> edges[N], child[N];
-int parent[N], depth[N], in[N], top[N];
-int sz[N], inv_in[N]; // HLD내부적으로 필요. 
-// inv_in은 seg의 초기화에 필요.
-int n, cnt; 
+#define N 100000
 
-void DFS(int idx, int p){
-	child[idx].reserve(edges[idx].size()-1);
-	for(int i=0; i<edges[idx].size(); i++){
-		int next=edges[idx][i];
-		if(next!=p){
-			child[idx].push_back(next);
-			DFS(next,idx);
-		}
-	}
-}
+vector<int> g[N];
+int parent[N], depth[N], sz[N];
+int head[N], pos[N], timer;
 
-// parent[루트], top[루트], depth[루트]업데이트 해줘야 함.
-void DFS1(int idx=0){
-	sz[idx]=1;
-	for(int i=0; i<child[idx].size(); i++){
-		int next=child[idx][i];
-		parent[next]=idx;
-		depth[next]=depth[idx]+1;
-		DFS1(next);
-		sz[idx]+=sz[next];
-		if(sz[next]>sz[child[idx][0]]) swap(child[idx][0],child[idx][i]);
-	}
-}
-
-void DFS2(int idx=0){
-	in[idx]=cnt;
-	for(int i=0; i<child[idx].size(); i++){
-		int next=child[idx][i];
-		top[next]=(i==0?top[idx]:next);
-		cnt++;
-		DFS2(next);
-	}
-}
-
-class node{
-public:
-    // Do something!
-    node(){}
-    node(){
-        
+void dfs_sz(int u, int p = -1) {
+    sz[u] = 1;
+    parent[u] = p;
+    for(int &v : g[u]) {
+        if(v == p) continue;
+        depth[v] = depth[u] + 1;
+        dfs_sz(v, u);
+        sz[u] += sz[v];
+        if(sz[v] > sz[g[u][0]]) swap(v, g[u][0]);
     }
-    node operator+(node b){
-        node result;
-        // Do something!
-        return result;
+}
+
+void dfs_hld(int u, int p = -1) {
+    pos[u] = ++timer;
+    for(int v : g[u]) {
+        if(v == p) continue;
+        head[v] = (v == g[u][0] ? head[u] : v);
+        dfs_hld(v, u);
     }
-    // int val, lazy_val;
-};
-
-class lazy_seg{
-public:
-	node seg[1<<18];
-	
-	lazy_seg(){}
-	lazy_seg(int n){
-	    //fill(seg,seg+n,node());
-	}
-	
-	void build_seg(int idx, int l, int r){
-		if(l==r){
-			// Do something!
-		}
-		else{
-			int mid=(l+r)>>1;
-			build_seg(2*idx,l,mid);
-			build_seg(2*idx+1,mid+1,r);
-			seg[idx]=seg[2*idx]+seg[2*idx+1];
-		}
-	}
-	
-	void update_down(int idx, int l, int r){
-		if(l==r) return;
-		int mid=(l+r)>>1;
-		// seg[2*idx], seg[2*idx+1]
-		
-		// seg[idx]의 lazy_val초기화
-		
-	}
-	
-	void update_seg(int idx, int l, int r, int t_l, int t_r, 
-                    int val){
-		if(t_l<=l && r<=t_r){
-			// seg[idx].val과 seg[idx].lazy_val업데이트
-			return;
-		}
-		update_down(idx, l, r);
-		int mid=(l+r)>>1;
-		if(t_l<=mid) update_seg(2*idx,l,mid,t_l,t_r,val);
-		if(t_r>mid) update_seg(2*idx+1,mid+1,r,t_l,t_r,val);
-		seg[idx]=seg[2*idx]+seg[2*idx+1];
-	}
-	
-	node find_seg(int idx, int l, int r, int t_l, int t_r){
-		if(t_l<=l && r<=t_r){
-			return seg[idx];
-		}
-		update_down(idx, l, r);
-		node result;
-		int mid=(l+r)>>1;
-		if(t_l<=mid) result=result+find_seg(2*idx,l,mid,t_l,t_r);
-		if(t_r>mid) result=result+find_seg(2*idx+1,mid+1,r,t_l,t_r);
-		return result;
-	}
-};
-
-lazy_seg s;
-
-int get_LCA(int a,int b){ 
-	while(top[a]!=top[b]){
-		if(depth[top[a]]<depth[top[b]]) swap(a,b);
-		a=parent[top[a]];
-	}
-	return (in[a]<in[b]?a:b);
 }
 
-node query(int a, int b){
-	node result;
-	while(top[a]!=top[b]){
-		if(depth[top[a]]<depth[top[b]]) swap(a,b);
-		result=result+s.find_seg(1,0,n-1,in[top[a]],in[a]); 
-            // 더하는 순서가 중요하다면 잘 확인할 것
-		a=parent[top[a]];
-	}
-	result=result+s.find_seg(1,0,n-1,
-            min(in[a],in[b]),max(in[a],in[b]));
-	return result;
+int lca(int u, int v) {
+    while(head[u] != head[v]) {
+        if(depth[head[u]] < depth[head[v]]) swap(u, v);
+        u = parent[head[u]];
+    }
+    return depth[u] < depth[v] ? u : v;
 }
 
-void update_query(int a, int b, int val){
-	while(top[a]!=top[b]){
-		if(depth[top[a]]<depth[top[b]]) swap(a,b);
-		s.update_seg(1,0,n-1,in[top[a]],in[a],val);
-		a=parent[top[a]];
-	}
-	s.update_seg(1,0,n-1,
-            min(in[a],in[b]),max(in[a],in[b]),val);
+// Query path from u to v (use segment tree on pos[])
+void path_query(int u, int v) {
+    while(head[u] != head[v]) {
+        if(depth[head[u]] < depth[head[v]]) swap(u, v);
+        // Query segment tree: [pos[head[u]], pos[u]]
+        u = parent[head[u]];
+    }
+    if(depth[u] > depth[v]) swap(u, v);
+    // Query segment tree: [pos[u], pos[v]]
 }
 
-/*
-int main(){
-	// initialize n
-	cnt=0;
-	parent[0]=-1, top[0]=depth[0]=0;
-	DFS(0,-1);
-	DFS1(0);
-	DFS2(0);
-	s.build_seg(1,0,n-1);
+int main() {
+    int n;
+    cin >> n;
 
-	return 0;
+    for(int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    depth[1] = 0;
+    dfs_sz(1);
+    head[1] = 1;
+    timer = 0;
+    dfs_hld(1);
+
+    // pos[u] = position of node u in segment tree
+    // Use segment tree for path/subtree queries
 }
-*/
+
 \end{minted}
 
-\subsection{HLD 금광}
+
+\subsection{Knuth Optimization}
 \begin{minted}{cpp}
-// 금광 + HLD아니냐
 #include <bits/stdc++.h>
-#define endl '\n'
-#define fi first
-#define se second
-#define pb push_back
+using namespace std;
+
+
+// cost function
+// for (a,b,c,d) such that a <= b <= c <= d
+// following must be satisfied:
+// C(b,c) <= C(a,d)
+// C(a,c) + C(b,d) <= C(a,d) + C(b,c)
+
+int C(int i, int j) {
+
+}
+
+int solve() {
+    int N;
+    // read N and input
+    int dp[N][N], opt[N][N];
+
+    for (int i = 0; i < N; i++) {
+        opt[i][i] = i;
+        // Initialize dp[i][i] according to the problem
+    }
+
+    // works in O(N^2)
+    for (int i = N-2; i >= 0; i--) {
+        for (int j = i+1; j < N; j++) {
+            int mn = INT_MAX;
+            int cost = C(i, j);
+            for (int k = opt[i][j-1]; k <= min(j-1, opt[i+1][j]); k++) {
+                if (mn >= dp[i][k] + dp[k+1][j] + cost) {
+                    opt[i][j] = k; 
+                    mn = dp[i][k] + dp[k+1][j] + cost; 
+                }
+            }
+            dp[i][j] = mn; 
+        }
+    }
+
+    return dp[0][N-1];
+}
+\end{minted}
+
+
+\subsection{Linear Convex Hull Trick}
+\begin{minted}{cpp}
+#include <bits/stdc++.h>
 
 using namespace std;
 
 typedef long long ll;
+#define int ll
+#define pb push_back
+#define all(x) (x).begin(), (x).end()
 
+const int len = 1<<19;
 
-#define N 200020
+// assuming decreasing M / Increasing X
 
-vector<pair<pair<int,int>,int>> qs;
-int datas[N];
+struct CHT {
+    struct Line {
+        ll m, c;
+        ll eval(ll x) { return m * x + c; }
+    };
 
-vector<int> edges[N], child[N];
-int parent[N], depth[N], in[N], top[N];
-int sz[N], inv_in[N]; // HLD내부적으로 필요. inv_in은 seg의 초기화에 필요.
-int n, cnt; 
+    vector<Line> hull;
+    int ptr = 0;
 
-void DFS(int idx, int p){
-	//child[idx].reserve(edges[idx].size()-1);
-	for(int i=0; i<edges[idx].size(); i++){
-		int next=edges[idx][i];
-		if(next!=p){
-			child[idx].push_back(next);
-			DFS(next,idx);
-		}
-	}
-}
-
-// parent[루트], top[루트], depth[루트]업데이트 해줘야 함.
-void DFS1(int idx=0){
-	sz[idx]=1;
-	for(int i=0; i<child[idx].size(); i++){
-		int next=child[idx][i];
-		parent[next]=idx;
-		depth[next]=depth[idx]+1;
-		DFS1(next);
-		sz[idx]+=sz[next];
-		if(sz[next]>sz[child[idx][0]]) 
-            swap(child[idx][0],child[idx][i]);
-	}
-}
-
-void DFS2(int idx=0){
-	in[idx]=cnt;
-    inv_in[cnt]=idx;
-	for(int i=0; i<child[idx].size(); i++){
-		int next=child[idx][i];
-		top[next]=(i==0?top[idx]:next);
-		cnt++;
-		DFS2(next);
-	}
-}
-
-class node{
-public:
-    // Do something!
-    node(){}
-    node(int val){
-        l_mn=r_mn=t_mn=min(0,val);
-        l_mx=r_mx=t_mx=max(0,val);
-        sum=val;
+    bool bad(Line l1, Line l2, Line l3) {
+        return (__int128)(l2.c - l1.c) * (l3.m - l2.m) <= \
+        (__int128)(l3.c - l2.c) * (l2.m - l1.m);
     }
-    node operator+(node b){
-        node result;
-        result.l_mn=min(l_mn,sum+b.l_mn);
-        result.l_mx=max(l_mx,sum+b.l_mx);
-        result.r_mn=min(b.r_mn,b.sum+r_mn);
-        result.r_mx=max(b.r_mx,b.sum+r_mx);
-        result.t_mn=min(min(t_mn, b.t_mn), r_mn+b.l_mn);
-        result.t_mx=max(max(t_mx, b.t_mx), r_mx+b.l_mx);
-        result.sum=sum+b.sum;
-        return result;
+
+    void addLine(ll m, ll c) {
+        Line L = {m, c};
+        if (!hull.empty() && hull.back().m == L.m) {
+            if (hull.back().c >= L.c) return;
+            hull.pop_back();
+        }
+        while (hull.size() >= 2 && bad(hull[hull.size()-2], hull.back(), L)) {
+            hull.pop_back();
+        }
+        hull.pb(L);
     }
-    int l_mn, l_mx, r_mn, r_mx, t_mn, t_mx, sum;
+
+    ll query(ll x) {
+
+        // can change to binary search here to avoid condition of increasing X.
+
+        while (ptr + 1 < (int)hull.size() && hull[ptr + 1].eval(x) >= hull[ptr].eval(x)) {
+            ptr++;
+        }
+        return hull[ptr].eval(x);
+    }
 };
-
-class lazy_seg{
-public:
-	node seg[1<<19];
-	lazy_seg(){}
-	
-	void build_seg(int idx, int l, int r){
-		if(l==r){
-			seg[idx]=node(datas[inv_in[l]]);
-		}
-		else{
-			int mid=(l+r)>>1;
-			build_seg(2*idx,l,mid);
-			build_seg(2*idx+1,mid+1,r);
-			seg[idx]=seg[2*idx]+seg[2*idx+1];
-		}
-	}
-    
-	node find_seg(int idx, int l, int r, int t_l, int t_r){
-		if(t_l<=l && r<=t_r){
-			return seg[idx];
-		}
-		node result(0);
-		int mid=(l+r)>>1;
-		if(t_l<=mid) result=result+find_seg(2*idx,l,mid,t_l,t_r);
-		if(t_r>mid) result=result+find_seg(2*idx+1,mid+1,r,t_l,t_r);
-		return result;
-	}
-};
-
-lazy_seg s;
-
-int get_LCA(int a,int b){ 
-	while(top[a]!=top[b]){
-		if(depth[top[a]]<depth[top[b]]) swap(a,b);
-		a=parent[top[a]];
-	}
-	return (in[a]<in[b]?a:b);
-}
-
-node query(int a, int b){
-	node result_l(0); // 금광세그의 특수성 때문이다.
-    node result_r(0);
-    while(top[a]!=top[b]){
-		if(depth[top[a]]<depth[top[b]]){
-            result_r=s.find_seg(1,0,n-1,in[top[b]],in[b])+result_r;
-            b=parent[top[b]];
-        }
-		else{
-            result_l=s.find_seg(1,0,n-1,in[top[a]],in[a])+result_l;
-		    a=parent[top[a]];
-        }
-	}
-	if(in[a]<in[b]) result_r=s.find_seg(1,0,n-1,in[a],in[b])+result_r;
-	else result_l=s.find_seg(1,0,n-1,in[b],in[a])+result_l;
-    // 반전 해줘야 함.
-    swap(result_l.l_mn,result_l.r_mn);
-    swap(result_l.l_mx,result_l.r_mx);
-    return result_l+result_r;
-}
-
-int main(){
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    int t;
-    cin>>t;
-    while(t--){
-        int a,b,c;
-        char mode;
-        int nn;
-        cin>>nn;
-        
-        n=1;
-        datas[0]=1;
-        for(int i=0; i<nn; i++){
-            cin>>mode;
-            if(mode=='+'){
-                n++;
-                cin>>a>>b;
-                datas[n-1]=b;
-                edges[n-1].push_back(a-1);
-                edges[a-1].push_back(n-1);
-            }
-            else{
-                cin>>a>>b>>c;
-                if(a<b) swap(a,b);
-                qs.push_back({{a-1,b-1},c});
-            }
-        }
-
-        cnt=0;
-        parent[0]=-1;
-        top[0]=depth[0]=0;
-        DFS(0,-1);
-        DFS1(0);
-        DFS2(0);
-        s.build_seg(1,0,n-1);
-        //cout<<"n in this : "<<n<<endl;
-        for(int i=0; i<qs.size(); i++){
-            auto res=query(qs[i].fi.fi,qs[i].fi.se);
-            //cout<<"query "<<qs[i].fi.fi<<' '<<qs[i].fi.se<<" : "
-            // <<res.t_mn<<' '<<res.t_mx<<endl;
-            if(res.t_mn<=qs[i].se && res.t_mx>=qs[i].se) 
-                cout<<"YES"<<endl;
-            else cout<<"NO"<<endl;
-        }
-        for(int i=0; i<n; i++) edges[i].clear();
-        for(int i=0; i<n; i++) child[i].clear();
-        qs.clear();
-    }
-    return 0;
-}
 \end{minted}
+
+
 
 \section{Graph}
 \subsection{Dijkstra}
@@ -831,217 +633,377 @@ int main(){
 
 \subsection{2-SAT}
 \begin{minted}{cpp}
-// 2-SAT
 #include <bits/stdc++.h>
-#define N 200000 // Upper bound for number of nodes in graph
-
 using namespace std;
 
-// For scc
-vector<int> edges[N]; 
-vector<int> r_edges[N];
-int scc[N];
-int order[N];
-bool visited[N];
-int cnt, scc_cnt; // Number of SCC's
-int n; // Number of actual nodes in graph
 
-// For 2-SAT
-vector<int> r_scc_edges[N]; 
-// reverse edges connecting sccs (in scc index)
-vector<int> scc_element[N]; // Nodes of each scc
-bool scc_fixed[N]; 
-// whether the value of scc determined (initially set false)
-bool scc_state[N]; // Determined scc value 
-inline int t_idx(int i){return i<<1;}
-inline int f_idx(int i){return (i<<1)+1;}
-inline int inv_idx(int i){return i^1;}
+struct TwoSatSolver {
+    int n_vars;
+    int n_vertices;
+    vector<vector<int>> adj, adj_t;
+    vector<bool> used;
+    vector<int> order, comp;
+    vector<bool> assignment;
 
-// Set n before call init function.
-void init_scc(){
-    for(int i=0; i<n; i++) {
-        edges[i].clear(), r_edges[i].clear();
+    TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars),\ 
+    adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), \
+    comp(n_vertices, -1), assignment(n_vars) {
+        order.reserve(n_vertices);
     }
-}
-
-void init_sat(){
-    init_scc();
-    for(int i=0; i<n; i++) {
-        r_scc_edges[i].clear(), scc_element[i].clear();
+    void dfs1(int v) {
+        used[v] = true;
+        for (int u : adj[v]) {
+            if (!used[u])
+                dfs1(u);
+        }
+        order.push_back(v);
     }
-    fill(scc_fixed, scc_fixed+n, false);
-    fill(scc_fixed, scc_fixed+n, true);
-}
 
-// Build SAT edge for prop A or B // a=t_idx(A). b=t_idx(B);
-// A and B could be same. Which means A is true.  
-// Manually insert edges[b].push_back(inv_idx(b)); 
-// where B is false and b=t_idx(B)
-void sat_edge(int a, int b){
-    edges[inv_idx(a)].push_back(b);
-    r_edges[b].push_back(inv_idx(a));
-    if(a!=b){
-        edges[inv_idx(b)].push_back(a);
-        r_edges[a].push_back(inv_idx(b));
-    }
-}
-
-void DFS(int idx){
-    visited[idx]=true;
-    for(int i=0; i<edges[idx].size(); i++) 
-        if(!visited[edges[idx][i]]) DFS(edges[idx][i]);
-    order[cnt]=idx; cnt++;
-}
-
-void r_DFS(int idx){
-    visited[idx]=true;
-    scc[idx]=cnt;
-    for(int i=0; i<r_edges[idx].size(); i++) 
-        if(!visited[r_edges[idx][i]]) r_DFS(r_edges[idx][i]);
-}
-
-// Kosaraju's algorithm. 
-// Set n, edges, r_edges before call this function.
-void get_scc(){
-    fill(visited, visited+n, false), cnt=0;
-    for(int i=0; i<n; i++) if(!visited[i]) DFS(i);
-    fill(visited, visited+n, false), cnt=0;
-    for(int i=n-1; i>=0; i--) 
-        if(!visited[order[i]]) {r_DFS(order[i]); cnt++;}
-    scc_cnt=cnt;
-}
-
-// Update answers of 2-sat to scc_state. 
-// fill(visited, visited+scc_cnt, false); before call this function.
-// Set scc_cnt, r_scc_edges and scc_element before call this function.
-bool r_scc_DFS(int idx, bool state){
-    visited[idx]=true;
-    bool new_state=false;
-    for(int i=0; i<r_scc_edges[idx].size(); i++){
-        if(!visited[r_scc_edges[idx][i]]){
-            new_state=new_state
-                ||r_scc_DFS(r_scc_edges[idx][i], state);
+    void dfs2(int v, int cl) {
+        comp[v] = cl;
+        for (int u : adj_t[v]) {
+            if (comp[u] == -1)
+                dfs2(u, cl);
         }
     }
-    if(!scc_fixed[idx]){
-        scc_fixed[idx]=true;
-        scc_state[idx]=new_state;
-    }
-    else new_state=scc_state[idx];
 
-    for(int i=0; i<scc_element[idx].size(); i++){
-        int cur=scc_element[idx][i];
-        int inv_scc=scc[inv_idx(cur)];
-        scc_fixed[inv_scc]=true;
-        scc_state[inv_scc]=!scc_state[idx];
-    }
-    return new_state;
-}
+    bool solve_2SAT() {
+        order.clear();
+        used.assign(n_vertices, false);
+        for (int i = 0; i < n_vertices; ++i) {
+            if (!used[i])
+                dfs1(i);
+        }
 
+        comp.assign(n_vertices, -1);
+        for (int i = 0, j = 0; i < n_vertices; ++i) {
+            int v = order[n_vertices - i - 1];
+            if (comp[v] == -1)
+                dfs2(v, j++);
+        }
+
+        assignment.assign(n_vars, false);
+        for (int i = 0; i < n_vertices; i += 2) {
+            if (comp[i] == comp[i + 1])
+                return false;
+            assignment[i / 2] = comp[i] > comp[i + 1];
+        }
+        return true;
+    }
+
+    void add_disjunction(int a, bool na, int b, bool nb) {
+        // na and nb signify whether a and b are to be negated 
+        a = 2 * a ^ na;
+        b = 2 * b ^ nb;
+        int neg_a = a ^ 1;
+        int neg_b = b ^ 1;
+        adj[neg_a].push_back(b);
+        adj[neg_b].push_back(a);
+        adj_t[b].push_back(neg_a);
+        adj_t[a].push_back(neg_b);
+    }
+
+    static void example_usage() {
+        TwoSatSolver solver(3); // a, b, c
+        solver.add_disjunction(0, false, 1, true);  //     a  v  not b
+        solver.add_disjunction(0, true, 1, true);   // not a  v  not b
+        solver.add_disjunction(1, false, 2, false); //     b  v      c
+        solver.add_disjunction(0, false, 0, false); //     a  v      a
+        assert(solver.solve_2SAT() == true);
+        auto expected = vector<bool>({true, false, true});
+        assert(solver.assignment == expected);
+    }
+} scc;
 
 \end{minted}
 
 \subsection{SCC}
 \begin{minted}{cpp}
-// 2-SAT
 #include <bits/stdc++.h>
-#define N 200000 // Upper bound for number of nodes in graph
-
 using namespace std;
 
-// For scc
-vector<int> edges[N]; 
-vector<int> r_edges[N];
-int scc[N];
-int order[N];
-bool visited[N];
-int cnt, scc_cnt; // Number of SCC's
-int n; // Number of actual nodes in graph
+#define N 100000
 
-// Set n before call init function.
-void init_scc(){
-    for(int i=0; i<n; i++) {edges[i].clear(), r_edges[i].clear();}
+vector<int> g[N], gr[N];
+bool vis[N];
+int comp[N], num_scc;
+vector<int> order;
+
+void dfs1(int u) {
+    vis[u] = true;
+    for(int v : g[u]) {
+        if(!vis[v]) dfs1(v);
+    }
+    order.push_back(u);
 }
 
-
-void DFS(int idx){
-    visited[idx]=true;
-    for(int i=0; i<edges[idx].size(); i++) 
-        XZBCVN,if(!visited[edges[idx][i]]) DFS(edges[idx][i]);
-    order[cnt]=idx; cnt++;
+void dfs2(int u, int c) {
+    comp[u] = c;
+    for(int v : gr[u]) {
+        if(comp[v] == -1) dfs2(v, c);
+    }
 }
 
-void r_DFS(int idx){
-    visited[idx]=true;
-    scc[idx]=cnt;
-    for(int i=0; i<r_edges[idx].size(); i++) 
-        if(!visited[r_edges[idx][i]]) r_DFS(r_edges[idx][i]);
+// Kosaraju's algorithm
+void find_scc(int n) {
+    // First DFS to get finish times
+    fill(vis, vis + n + 1, false);
+    for(int i = 1; i <= n; i++) {
+        if(!vis[i]) dfs1(i);
+    }
+
+    // Second DFS on reversed graph in reverse order
+    fill(comp, comp + n + 1, -1);
+    num_scc = 0;
+    reverse(order.begin(), order.end());
+    for(int u : order) {
+        if(comp[u] == -1) {
+            dfs2(u, num_scc++);
+        }
+    }
 }
 
-// Kosaraju's algorithm. 
-// Set n, edges, r_edges before call this function.
-void get_scc(){
-    fill(visited, visited+n, false), cnt=0;
-    for(int i=0; i<n; i++) 
-        if(!visited[i]) DFS(i);
-    fill(visited, visited+n, false), cnt=0;
-    for(int i=n-1; i>=0; i--) 
-        if(!visited[order[i]]) {r_DFS(order[i]); cnt++;}
-    scc_cnt=cnt;
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    for(int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        gr[v].push_back(u); // reversed graph
+    }
+
+    find_scc(n);
+
+    // comp[u] = SCC id of node u (0 to num_scc-1)
+    // Build condensation graph if needed
 }
+
 \end{minted}
 
 
-\subsection{Centroid}
+
+
+\subsection{Eulerian Tour}
 \begin{minted}{cpp}
-// Centroid
 #include <bits/stdc++.h>
-#define N 200000
 using namespace std;
- 
-vector<int> edges[N];
-bool visited[N];
-int sub_sz[N];
-long long cnt;
 
-int sz_DFS(int idx, int p){
-	int result=1;
-	for(int i=0; i<edges[idx].size(); i++){
-		if(edges[idx][i]!=p && !visited[edges[idx][i]]){
-			result+=sz_DFS(edges[idx][i], idx);
-		}
-	}
-	return sub_sz[idx]=result;
+// Eulerian Paths -- a path that goes through every edge exactly once
+// Eulerian Tours - eulerian path that starts and ends at the same node
+
+// a graph can have an Eulerian cycle (not path!) if and only if every node 
+// has an even degree.
+
+// The condition of existence for an eulerian path in a directed graph
+// is: At most one node has out[i] - in[i]=1 and at most one node has 
+// in[i] - out[i] = 1. This property is because an Eulerian path or 
+// cycle leaves a node the same number of times it enters the node. 
+// In a directed graph the exception are the start node and the end node.
+
+{
+    // Eulerian Tour
+
+    int n, m;
+    vector<vector<pair<int, int>>> g;
+    vector<int> path;
+    vector<bool> seen;
+
+    void dfs(int node) {
+        while (!g[node].empty()) {
+            auto [son, idx] = g[node].back();
+            g[node].pop_back();
+            if (seen[idx]) { continue; }
+            seen[idx] = true;
+            dfs(son);
+        }
+        path.push_back(node);
+    }
+
+    int main() {
+        cin >> n >> m;
+
+        vector<int> degree(n, 0);
+        g.resize(n);
+        degree.resize(n);
+        seen.resize(m);
+
+        for (int i = 0; i < m; i++) {
+            int x, y;
+            cin >> x >> y;
+            x--, y--;
+            g[x].emplace_back({y, i});
+            g[y].emplace_back({x, i});
+            degree[x]++;
+            degree[y]++;
+        }
+
+        for (int node = 0; node < n; node++) {
+            if (degree[node] % 2) {
+                cout << "IMPOSSIBLE" << endl;
+                return 0;
+            }
+        }
+
+        dfs(0);
+
+        if (path.size() != m + 1) {
+            cout << "IMPOSSIBLE";
+        } else {
+            for (int node : path) { cout << node + 1 << ' '; }
+        }
+        cout << endl;
+    }
 }
 
-int find_centroid(int idx, int p, int tot_sz){
-	int result=idx;
-	for(int i=0; i<edges[idx].size(); i++){
-		int next=edges[idx][i];
-		if(next!=p && !visited[edges[idx][i]] 
-            && sub_sz[next]>tot_sz/2){
-			result=find_centroid(next,idx,tot_sz);
-			break;
-		}
-	}
-	return result;
-}
+{
 
-void main_DFS(int idx, int p){
-	int tot_sz=sz_DFS(idx,p);
-	if(tot_sz==1) return;
-	int cent=find_centroid(idx,p,tot_sz);
-	visited[cent]=true;
-	
-	// Do something!
-	
-	for(int i=0; i<edges[cent].size(); i++){
-		int next=edges[cent][i];
-		if(!visited[next]) main_DFS(next,cent);
-	}
-	return;
+    // Eulerian Path
+    
+    int n, m;
+    vector<vector<int>> g;
+    vector<int> in, out, path;
+
+    void dfs(int node) {
+        while (!g[node].empty()) {
+            int son = g[node].back();
+            g[node].pop_back();
+            dfs(son);
+        }
+        path.push_back(node);
+    }
+
+    int main() {
+        cin >> n >> m;
+
+        g.resize(n + 1);
+        in.resize(n + 1);
+        out.resize(n + 1);
+
+        for (int i = 0; i < m; i++) {
+            int x, y;
+            cin >> x >> y;
+            g[x].push_back(y);
+            out[x]++;
+            in[y]++;
+        }
+
+        bool flag = true;
+        for (int node = 2; node < n && flag; node++) {
+            if (in[node] != out[node]) { flag = false; }
+        }
+        if (out[1] != in[1] + 1 || out[n] != in[n] - 1 || !flag) {
+            cout << "IMPOSSIBLE";
+            return 0;
+        }
+
+        dfs(1);
+
+        reverse(path.begin(), path.end());
+        if (path.size() != m + 1 || path.back() != n) {
+            cout << "IMPOSSIBLE";
+        } else {
+            for (auto node : path) { cout << node << ' '; }
+        }
+    }
 }
 \end{minted}
+
+
+
+\subsection{Euler Tour}
+\begin{minted}{cpp}
+#include <bits/stdc++.h>
+using namespace std;
+
+#define N 100000
+
+vector<int> g[N];
+int tin[N], tout[N], timer;
+
+void dfs(int u, int p = -1) {
+    tin[u] = ++timer;
+    for(int v : g[u]) {
+        if(v != p) dfs(v, u);
+    }
+    tout[u] = timer;
+}
+
+// Check if u is ancestor of v
+bool is_ancestor(int u, int v) {
+    return tin[u] <= tin[v] && tout[v] <= tout[u];
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    for(int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    timer = 0;
+    dfs(1);
+
+    // Subtree of node u is [tin[u], tout[u]]
+    // Can use segment tree/BIT on this range
+}
+
+\end{minted}
+
+
+
+\subsection{Graph Coloring}
+\begin{minted}{cpp}
+    
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> edges[100];
+#define INF 100
+
+int chromatic_number(int n){ // n is # of vertices of the graph
+    // Minimum number of colors require to satisty "Graph Coloring Problem"
+    assert(n<20); // O(3^N) algorithm
+    int DP[(1<<n)];
+    DP[0]=1; // Convinient in DP process 
+    for(int k=0; k<n; k++){
+        for(int j=0; j<(1<<k); j++){
+            int num=(1<<k)+j, res=INF; // num indicates current subset
+            bool indep=0;
+            if(DP[j]==1){ // Check independence
+                indep=1;
+                for(auto next : edges[k]){
+                    if(j&(1<<next)){
+                        indep=0;
+                        break;
+                    }
+                }
+            }
+            if(indep) res=1;
+            else{
+                for(int t=num; t>0; t=(t-1)&num){
+                    // t swaps all the subsets of num
+                    if(num==t) continue;
+                    res=min(res, DP[t]+DP[num-t]);   
+                }
+            }
+            DP[num]=res;
+        }
+    }
+    return DP[(1<<n)-1];
+}
+
+\end{minted}
+
+
+
+
+
 
 \section{Flows / Matchings}
 \subsection{Min Cost Max Flow}
@@ -1243,6 +1205,8 @@ bool DFS(int idx){
 // N^2이 나오는 게 정상
 // if(DFS(i)) result++; 이렇게 유량을 구함.
 \end{minted}
+
+
 
 
 \section{Strings}
@@ -1476,28 +1440,26 @@ using namespace std;
 string s;
 int g[N+1], temp_g[N]; // g[i]는 정렬 전 i번째 접미사가 접근하는 group ordering
 int t; // 전역변수
-int sa[N], order[N]; // inv_sa==order of suffix array
+int sa[N], order[N]; // order[i]: position of suffix [i, ..., N-1] in the sorted array
 
-int LCP[N];
+int LCP[N]; // length of the prefix overlap between i th and i-1 th suffix 
+// -> You should use LCP[order[i]] to access LCP value of suffix starts at index i.
 
 bool compare(int i, int j){
     if(g[i]==g[j]) return g[i+t]<g[j+t];
     else return g[i]<g[j];
 }
 
-// SA[i]는 정렬된 suffix중 i번째의 것이 원래의 suffix중 몇 번째냐
+// SA[i]는 정렬된 suffix중 i번째의 것이 원래의 suffix중 몇 번째 인지
 // order[i]는 SA[i]의 역함수인데, i번째의 원래 suffix가 정렬되면 몇 번째로 들어가냐.
 
 void suffix_sort(const string &s){
     int n=s.size();
-    for(int i=0; i<n; i++) sa[i]=i, g[i]=s[i]; // 대소관계만 중요
+    for(int i=0; i<n; i++) sa[i]=i, g[i]=s[i];
     g[n]=-1, temp_g[0]=0;
     for(t=1; t<n; t<<=1){
         sort(sa,sa+n,compare);
         for(int i=1; i<n; i++){
-            // sa[i]는 앞에서 2t번째로 정렬된 것을 의미하는 듯 함.
-            // temp_g는 지금까지 밝혀진 정보로도 확실히 크다면 +1, 
-            // 아니면 이전 값과 동일.
             temp_g[sa[i]]=temp_g[sa[i-1]]+compare(sa[i-1],sa[i]); 
         }
         for(int i=0; i<n; i++) g[i]=temp_g[i];
@@ -1509,10 +1471,6 @@ void get_lcp(const string &s){
     int n=s.size();
     for(int i=0, j=0; i<n; i++){
         if(order[i]!=0){
-            // i는 이제 원래 idx임.
-            // sa[order[i]]와 sa[order[i]-1]의 최대 일치 -> LCP[order[i]]
-            // 원래 idx i의 정렬했을 때 바로 앞의 suffix의 원래 idx가 pre임.
-            // LCP는 늘어나는 건 많이 늘어날 수 있지만, LCP가 줄어드는 일은 최대 1만큼만.
             int pre=sa[order[i]-1];
             while(max(i+j,pre+j)<n && s[i+j]==s[pre+j]) j++;
             LCP[order[i]]=j;
@@ -1522,73 +1480,89 @@ void get_lcp(const string &s){
 }
 \end{minted}
 
-\section{Mathematics}
-\subsection{Prime}
+\subsection{Manacher}
 \begin{minted}{cpp}
-// 에라토스테네스의 체
-#include <bits/stdc++.h>
-#define endl '\n'
-#define cediv(a,b) ((a)%(b)==0?((a)/(b)):((a)/(b))+1)
-#define fi first
-#define se second
-#define pb push_back
-
+#include <iostream>
+#include <vector>
+#include <string>
 using namespace std;
 
-typedef long long ll;
-typedef unsigned int ui;
-typedef unsigned long long ull;
+class Manacher {
+public: 
 
-template<typename T>
-inline T umax(T &u, T v){return u = max(u, v);}
-template<typename T>
-inline T umin(T &u, T v){return u = min(u, v);}
+    // p[i] = radius of longest palindrome centered at i 
+    // in transformed string
+    vector<int> p;    
+    
+    // transformed string with # and sentinels
+    string ms;        
 
-#define N_PRIME 1000010
+    // preprocess the string and run the algorithm
+    Manacher(string &s) {
+        
+        // left sentinel
+        ms = "@"; 
+        for (char c : s) {
+            ms += "#" + string(1, c);
+        }
+        
+        // right sentinel
+        ms += "#$"; 
 
-bool is_prime[N_PRIME];
-vector<int> primes;
-
-void build_prime(int n){
-    // n<N_PRIME
-    fill(is_prime+2,is_prime+n+1,true);
-    for(int i=2; i<=n; i++){
-        if(!is_prime[i]) continue;
-        for(int j=2; i*j<=n; j++) is_prime[i*j]=false;
+        // run Manacher’s algorithm
+        runManacher();
     }
-    for(int i=2; i<=n; i++) if(is_prime[i]) primes.push_back(i);
-}
 
-// 소인수분해 코드
-int datas[100000];
-int cnt[100000]; 
-// 1~1e6까지 소수가 약 7만개 수준 1~1e7까지는 70만개 수준
+    void runManacher() {
+        int n = ms.size();
+        p.assign(n, 0);
+        int l = 0, r = 0;
 
-int main(){
-    int n;
-    cin>>n;
-    for(int i=0; i<n; i++) cin>>datas[i];
+        for (int i = 1; i < n - 1; ++i) {
+            
+            // mirror of i around center (l + r)/2
+            int mirror = l + r - i;
 
-    // 다음 코드는 datas[0]*datas[1]*...*datas[n-1]의 소인수분해를 한다.
-    // behavior를 바꾸고 싶으면 cnt[j]값을 더하는 대신에 
-    // cnt[i].push_back(j); 등으로 바꾸면 됨.
-    for(int i=0; i<n; i++){
-        int temp=datas[i];
-        for(int j=0; j<primes.size(); j++){
-            if(primes[j]>sqrt(temp) || primes[j]>=temp) break;
-            while(temp>primes[j] && temp%primes[j]==0){
-                temp/=primes[j];
-                cnt[j]++;
+            // initialize p[i] based on its mirror 
+            // if within bounds
+            if (i < r)
+                p[i] = min(r - i, p[mirror]);
+
+            // expand palindrome centered at i
+            while (ms[i + 1 + p[i]] == ms[i - 1 - p[i]]){
+                ++p[i];
+            }
+
+            // update [l, r] if the palindrome expands 
+            // beyond current r
+            if (i + p[i] > r) {
+                l = i - p[i];
+                r = i + p[i];
             }
         }
-        // 그럼 이제 지금 temp는 소수인 상황
-        int idx=lower_bound(primes.begin(), primes.end(), temp)
-            -primes.begin();
-        cnt[idx]++;
     }
-    return 0;
-}
+
+    // returns length of longest palindrome centered 
+    // at 'cen' in original string
+    // 'odd' = 1 → check for odd-length, 'odd' = 0 → even-length
+    int getLongest(int cen, int odd) {
+        
+        // map original index to transformed string index
+        int pos = 2 * cen + 2 + !odd;
+        return p[pos];
+    }
+
+    // checks if s[l..r] is a palindrome in O(1)
+    bool check(int l, int r) {
+        int len = r - l + 1;
+        int cen = (l + r) / 2;
+        return len <= getLongest(cen, len % 2);
+    }
+};
 \end{minted}
+
+
+\section{Mathematics}
 
 \subsection{Arithmetic Inverse}
 \begin{minted}{cpp}
@@ -1613,102 +1587,40 @@ long long ari_inv(long long num){
 }
 \end{minted}
 
-\subsection{Factorization}
+\subsection{Sum Over Subsets}
 \begin{minted}{cpp}
-// Factorization
-#include <bits/stdc++.h>
-#define endl '\n'
-#define cediv(a,b) ((a)%(b)==0?((a)/(b)):((a)/(b))+1)
-#define fi first
-#define se second
-#define pb push_back
 
-using namespace std;
+// works in 3^n
+void naive_iteration(int n) {
+    for (int x = 0; x < (1 << n); x++) {
+        // iterate over all subsets of x directly
+        for (int i = x; i > 0; i = (i - 1) & x) {
 
-typedef long long ll;
-typedef unsigned int ui;
-typedef unsigned long long ull;
-
-template<typename T>
-inline T umax(T &u, T v){return u = max(u, v);}
-template<typename T>
-inline T umin(T &u, T v){return u = min(u, v);}
-
-vector<int> prime;
-int prime_cnt[100];
-
-void ppush(int num){
-    if(prime.size()==0) prime.push_back(num);
-    else if(prime[prime.size()-1]!=num) prime.push_back(num);
-    prime_cnt[prime.size()-1]++;
-}
-void factorize(ll temp){
-    while(temp!=1){
-        ll end=sqrt(temp)+1;
-        bool flag=false;
-        for(int i=2; i<=end; i++){
-            if(temp%i==0){
-                ppush(i);
-                temp=temp/i;
-                flag=true;
-                break;
-            }
-        }
-        if(!flag){
-            ppush(temp);
-            break;
-        }
-    }
-}
-\end{minted}
-
-\subsection{GCD}
-\begin{minted}{cpp}
-// gcd
-#include <bits/stdc++.h>
-#define endl '\n'
-#define cediv(a,b) ((a)%(b)==0?((a)/(b)):((a)/(b))+1)
-#define fi first
-#define se second
-#define pb push_back
-
-using namespace std;
-
-int gcd(int x, int y){
-    if(x<y) swap(x,y);
-    if(y==0) return x;
-    if(x%y==0) return y;
-    return gcd(y,x%y);
-}
-\end{minted}
-
-\subsection{$nCr$}
-\begin{minted}{cpp}
-// nCr
-#include <bits/stdc++.h>
-#define MOD 1000000007
-#define N 200000
-
-using namespace std;
-
-long long fact[N], f_inv[N];
-
-void fill_fact(){
-    fact[0]=1;
-    for(int i=1; i<N; i++) fact[i]=fact[i-1]*i%MOD;
-    fill(f_inv,f_inv+N,1);
-    for(int k=0; k<30; k++){
-        for(int i=0; i<N; i++){
-            f_inv[i]=f_inv[i]*f_inv[i]%MOD;
-            if((MOD-2)&(1<<(29-k))) f_inv[i]=f_inv[i]*fact[i]%MOD;
         }
     }
 }
 
-long long nCr(int n, int r){
-    return ((fact[n]*f_inv[r])%MOD)*f_inv[n-r]%MOD;
+\end{minted}
+
+
+
+
+\subsection{Floor Sum}
+\begin{minted}{cpp}
+// calculates for(i = 1; i <= n; i ++) sum += n/i
+long long floor_sum(long long n) {
+    long long c = 1;
+    long long sum = 0;
+    while(c <= n) {
+        long long v = n/c;
+        long long cp = n / v;
+        sum += (cp - c + 1) * v;
+        c = cp+1;
+    }
+    return sum;
 }
 \end{minted}
+
 
 \subsection{FFT}
 \begin{minted}{cpp}
@@ -1746,25 +1658,14 @@ void FFT(cpx g[], bool inv = false){
 }
 \end{minted}
 
+
 \subsection{NTT}
 \begin{minted}{cpp}
-// NTT
 #include <bits/stdc++.h>
 #define endl '\n'
 using namespace std;
 
 typedef long long ll;
-
-/* MOD = a 2^b + 1 일 때, [a, b, Primitive root] 순서쌍
-N으로 사용하는 값이 2^b보다 크면 사용할 수 없다.
-998244353 [119, 23, 3]
-2281701377 [17, 27, 3]
-2483027969 [37, 26, 3]
-2113929217 [63, 25, 5]
-104857601 [25, 22, 3]
-1092616193 [521, 21, 3]
-*/
-
 #define SZ 1<<18
 #define MOD 998244353
 #define AA 119
@@ -1783,8 +1684,7 @@ long long ari_inv(long long num){
     return res;
 }
 
-
-// 출력이 음수가 될 수 있음!!
+// The output can be negative
 void NTT(ll g[], bool inv = false){
     ll n = SZ;
     ll w_pow[n+1];
@@ -1794,8 +1694,6 @@ void NTT(ll g[], bool inv = false){
     }
     assert ((n>>bit_cnt)==1);
 
-    // w^n % MOD == 1 이어야 함.
-    // w = PR^((p-1) / n) = PR ^ (a*2^(b-bit_cnt))
     ll w = 1;
     ll pow = AA<<(BB-bit_cnt);
     ll mul = PR;
@@ -1814,21 +1712,18 @@ void NTT(ll g[], bool inv = false){
     ll cnt=0;
     for(ll k = 1; k < n; k *= 2){
         cnt++;
-        ll ww = w; // ww^(2*k) % MOD == 1 이어야 함.
-        // ww=w^(n/(2*k))=w^(2^(bit_cnt-cnt))
+        ll ww = w; 
         for(ll i=0; i<bit_cnt-cnt; i++) ww=(ww*ww)%MOD;
         for(ll i=0; i<k; i++) w_pow[i]=(i==0?1:(w_pow[i-1]*ww)%MOD);
         for(ll i = 0; i < n; i += k*2){
             ll wp = 1;
             for(ll j = 0; j < k; ++j){
                 ll x = g[i+j], y = g[i+j+k]*w_pow[j]; 
-                //MOD*MOD+MOD가 ll로 표현된다면 중간과정에서 %MOD 필요없음.
                 g[i+j] = (x + y); 
                 g[i+j+k] = (x - y);
             }
         }
         for(int i=0; i<n; i++) g[i]%=MOD; 
-        // 위의 for문 동안 한 번만 방문
     }
     if(inv){
         ll ari_n = ari_inv(n);
@@ -1845,7 +1740,9 @@ NTT(datas2);
 for(ll i=0; i<SZ; i++) datas1[i]=(datas1[i]*datas2[i])%MOD;
 NTT(datas1,true);
 */
+
 \end{minted}
+
 
 \subsection{NTT + Chinese Remainder Thm}
 \begin{minted}{cpp}
@@ -2011,7 +1908,109 @@ long long ternary(long long s, long long e){
 }
 \end{minted}
 
+
+\subsection{Gale-Shapley Algorithm}
+\begin{minted}{cpp}
+#include <bits/stdc++.h>
+using namespace std;
+#define rng(i,a,b) for(int i=a; i<=b; i++)
+#define gnr(i,a,b) for(int i=a; i>=b; i--)
+template<class t> using vc=vector<t>;
+typedef long long ll;
+using pii=pair<int,int>;
+using pll=pair<ll,ll>;
+#define N 1010
+
+// O(N^3) algorithm
+int A_pref[N][N], B_pref[N][N]; 
+// Suppose u\in A and v\in B. 
+// A[u][v]: u's preference score for v (the higher the better). 
+// B[v][u]: v's preference score for u. 
+
+int A_order[N][N]; // Initialize before call Gale_Shapley()
+// A_order[u][i]: i-th prefered element from B for u. (So prefered element idx first)
+bool attempted[N][N]; 
+// attempted[u][v]: Indicates whether the u attempted v previously
+int A_match[N], B_match[N]; // current match. Initialize to -1
+
+void Gale_Shapley(int n){
+    // return: match idx in A_match and B_match
+    fill(A_match,A_match+n,-1);
+    fill(B_match,B_match+n,-1);
+    rng(i,0,n-1) fill(attempted[i],attempted[i]+n,0);
+    queue<int> unmatched_A; 
+    
+    rng(i,0,n-1) unmatched_A.push(i);
+    while(!unmatched_A.empty()){
+        int u=unmatched_A.front();
+        unmatched_A.pop();
+        rng(i,0,n-1){
+            int v=A_order[u][i];
+            if(attempted[u][v]) continue;
+            if(B_match[v]==-1){
+                A_match[u]=v;
+                B_match[v]=u;
+                break;
+            }
+            else if(B_pref[v][B_match[v]] < B_pref[v][u]){ 
+                // u is prefered over previous match
+                unmatched_A.push(B_match[v]);
+                A_match[u]=v;
+                B_match[v]=u;
+                break;
+            }
+        }
+    }
+}
+
+\end{minted}
+
+
 \section{Geometry}
+\subsection{Line Intersection}
+\begin{minted}{cpp}
+#include <bits/stdc++.h>
+using namespace std;
+
+
+class Point {
+public:
+    long long x, y;
+    Point(long long x, long long y) {
+        this->x = x;
+        this->y = y;
+    }
+};
+
+int ccw(Point A, Point B, Point C) {
+    long long ccw = (B.x-A.x)*(C.y-A.y) - (B.y-A.y)*(C.x-A.x);
+
+    if (ccw > 0) return 1;
+    else if(ccw < 0) return -1;
+    else if(ccw == 0) return 0;
+}
+
+bool isIntersect(Point A, Point B, Point C, Point D) {
+    int ccw1 = ccw(A,B,C)*ccw(A,B,D);
+    int ccw2 = ccw(C,D,A)*ccw(C,D,B);
+
+    if (ccw1 <= 0 && ccw2 <= 0) {
+        if (ccw1 == 0 && ccw2 ==0) {
+            // All 4 points are collinear.
+            // Check if they overlap
+            return min(A.x, B.x) <= max(C.x, D.x) &&
+                 min(C.x, D.x) <= max(A.x, B.x) &&
+                 min(A.y, B.y) <= max(C.y, D.y) &&
+                 min(C.y, D.y) <= max(A.y, B.y);
+        }				
+        return true;
+    }
+
+    return false;
+}
+\end{minted}
+
+
 \subsection{Basic Operations}
 \begin{minted}{cpp}
 // Credit : PLEASE OPEN TESTDATA teamnote
@@ -2100,7 +2099,8 @@ bool get_segment_cross(const Line& a, const Line& b, Point& ret) {
 Point inner_center(const Point &a, const Point &b, const Point &c) {
     double wa = dist(b, c), wb = dist(c, a), wc = dist(a, b);
     double w = wa + wb + wc;
-    return Point{ (wa * a.x + wb * b.x + wc * c.x) / w, (wa * a.y + wb * b.y + wc * c.y) / w };
+    return Point{ (wa * a.x + wb * b.x + wc * c.x) / w, \
+    (wa * a.y + wb * b.y + wc * c.y) / w };
 }
 
 Point outer_center(const Point &a, const Point &b, const Point &c) {
@@ -2350,5 +2350,21 @@ return abs(area/2);
 \[
 |X/G| = \sum_{g \in G} |X^g|
 \]
+
+\paragraph{Pisano Period}
+Pisano Period refers to the period with which Fibonacci numbers mod some P repeats. In other words, for some modulus P, its Pisano Period is equal to some M such that 
+\[
+F_a \equiv F_{(a \% M)} \mod P ~~\forall ~a.
+\]
+for moduli of form $10^k$, its $15 * 10^k$.
+
+\paragraph{Euler Characteristics}
+For a planar graph, the following identity holds: 
+\[
+x = V - E + F
+\]
+where V = vertices, E = edges, F = faces
+
+
 \end{multicols}
 \end{document}

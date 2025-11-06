@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// union\PYGZus{}find}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}bits/stdc++.h\PYGZgt{}}
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{parent}\PYG{p}{[}\PYG{l+m+mi}{100000}\PYG{p}{];}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{find}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{)\PYGZob{}}
+\PYG{o}{\PYGZca{}\PYGZca{}}\PYG{n}{Iif}\PYG{p}{(}\PYG{n}{idx}\PYG{o}{==}\PYG{n}{parent}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{])}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{;}
+\PYG{o}{\PYGZca{}\PYGZca{}}\PYG{n}{Ireturn}\PYG{+w}{ }\PYG{n}{parent}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{=}\PYG{n}{find}\PYG{p}{(}\PYG{n}{parent}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]);}
+\PYG{p}{\PYGZcb{}}
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{c\PYGZus{}union}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{a}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{b}\PYG{p}{)\PYGZob{}}
+\PYG{o}{\PYGZca{}\PYGZca{}}\PYG{n}{Ia}\PYG{o}{=}\PYG{n}{find}\PYG{p}{(}\PYG{n}{a}\PYG{p}{),}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{=}\PYG{n}{find}\PYG{p}{(}\PYG{n}{b}\PYG{p}{);}
+\PYG{o}{\PYGZca{}\PYGZca{}}\PYG{n}{Iparent}\PYG{p}{[}\PYG{n}{b}\PYG{p}{]}\PYG{o}{=}\PYG{n}{a}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,27 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// Lazy count tree. Update down이 필요없는 아주 단순한 형태의 lazy\PYGZus{}seg}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}iostream\PYGZgt{}}
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{l+m+mi}{800000}\PYG{p}{];}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{update\PYGZus{}seg}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{l}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{r}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t\PYGZus{}l}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t\PYGZus{}r}\PYG{p}{,}
+\PYG{+w}{                }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{val}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}l}\PYG{o}{\PYGZlt{}=}\PYG{n}{l}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{r}\PYG{o}{\PYGZlt{}=}\PYG{n}{t\PYGZus{}r}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{+=}\PYG{n}{val}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{mid}\PYG{o}{=}\PYG{p}{(}\PYG{n}{l}\PYG{o}{+}\PYG{n}{r}\PYG{p}{)}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}l}\PYG{o}{\PYGZlt{}=}\PYG{n}{mid}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{update\PYGZus{}seg}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{idx}\PYG{p}{,}\PYG{n}{l}\PYG{p}{,}\PYG{n}{mid}\PYG{p}{,}\PYG{n}{t\PYGZus{}l}\PYG{p}{,}\PYG{n}{t\PYGZus{}r}\PYG{p}{,}\PYG{n}{val}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}r}\PYG{o}{\PYGZgt{}}\PYG{n}{mid}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{update\PYGZus{}seg}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{idx}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{mid}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{r}\PYG{p}{,}\PYG{n}{t\PYGZus{}l}\PYG{p}{,}\PYG{n}{t\PYGZus{}r}\PYG{p}{,}\PYG{n}{val}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n+nf}{find\PYGZus{}seg}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{l}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{r}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t\PYGZus{}idx}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{l}\PYG{o}{==}\PYG{n}{r}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{res}\PYG{o}{=}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{mid}\PYG{o}{=}\PYG{p}{(}\PYG{n}{l}\PYG{o}{+}\PYG{n}{r}\PYG{p}{)}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}idx}\PYG{o}{\PYGZlt{}=}\PYG{n}{mid}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{res}\PYG{o}{=}\PYG{n}{res}\PYG{o}{+}\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{idx}\PYG{p}{,}\PYG{n}{l}\PYG{p}{,}\PYG{n}{mid}\PYG{p}{,}\PYG{n}{t\PYGZus{}idx}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}idx}\PYG{o}{\PYGZgt{}}\PYG{n}{mid}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{res}\PYG{o}{=}\PYG{n}{res}\PYG{o}{+}\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{idx}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{mid}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{r}\PYG{p}{,}\PYG{n}{t\PYGZus{}idx}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

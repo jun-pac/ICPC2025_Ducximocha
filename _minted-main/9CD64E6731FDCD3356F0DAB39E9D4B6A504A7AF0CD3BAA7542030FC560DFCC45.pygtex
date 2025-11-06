@@ -1,0 +1,28 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// Ternary search}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}bits/stdc++.h\PYGZgt{}}
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{c+cp}{\PYGZsh{}define INF 1e18}
+
+\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n+nf}{f}\PYG{p}{(}\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{x}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+c1}{// calculate f(x)}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n+nf}{ternary}\PYG{p}{(}\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{s}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{e}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{c+c1}{// Return smallest x if there are multiple minimum values.}
+\PYG{+w}{    }\PYG{k}{while}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{o}{\PYGZlt{}=}\PYG{n}{e}\PYG{o}{\PYGZhy{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{l}\PYG{o}{=}\PYG{p}{(}\PYG{n}{s}\PYG{o}{+}\PYG{n}{s}\PYG{o}{+}\PYG{n}{e}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{r}\PYG{o}{=}\PYG{p}{(}\PYG{n}{s}\PYG{o}{+}\PYG{n}{e}\PYG{o}{+}\PYG{n}{e}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{3}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{f}\PYG{p}{(}\PYG{n}{l}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{n}{f}\PYG{p}{(}\PYG{n}{r}\PYG{p}{))}\PYG{+w}{ }\PYG{n}{s}\PYG{o}{=}\PYG{n}{l}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{else}\PYG{+w}{ }\PYG{n}{e}\PYG{o}{=}\PYG{n}{r}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{mx}\PYG{o}{=}\PYG{n}{INF}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{n}{s}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}=}\PYG{n}{e}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{temp}\PYG{o}{=}\PYG{n}{f}\PYG{p}{(}\PYG{n}{i}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{mx}\PYG{o}{\PYGZgt{}}\PYG{n}{temp}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{mx}\PYG{o}{=}\PYG{n}{temp}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{res}\PYG{o}{=}\PYG{n}{i}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,4 @@
+for (int i=0; i<n; i++){
+    area += X[i]*Y[(i+1)%len] - X[i]*Y[(i+len-1)%len];
+}
+return abs(area/2);

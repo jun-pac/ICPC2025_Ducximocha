@@ -1,0 +1,97 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// PST}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}bits/stdc++.h\PYGZgt{}}
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{c+cp}{\PYGZsh{}define N\PYGZus{}node 2000000 }\PYG{c+c1}{// V log|Y\PYGZus{}RANGE| scale}
+\PYG{c+cp}{\PYGZsh{}define NX 100001}
+\PYG{c+cp}{\PYGZsh{}define Y\PYGZus{}RANGE 100001}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{node}\PYG{p}{\PYGZob{}}
+\PYG{k}{public}\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{node}\PYG{p}{()\PYGZob{}\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{node}\PYG{+w}{ }\PYG{k}{operator}\PYG{o}{+}\PYG{p}{(}\PYG{n}{node}\PYG{+w}{ }\PYG{n}{b}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{node}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{        }\PYG{c+c1}{// Implement. 예시는 단순히 개수 세는 것.}
+\PYG{+w}{        }\PYG{c+c1}{// 왼쪽에 더해지는 node의 l\PYGZus{}idx, r\PYGZus{}idx를 보존한다.}
+\PYG{+w}{        }\PYG{n}{res}\PYG{p}{.}\PYG{n}{l\PYGZus{}idx}\PYG{o}{=}\PYG{n}{l\PYGZus{}idx}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{.}\PYG{n}{r\PYGZus{}idx}\PYG{o}{=}\PYG{n}{r\PYGZus{}idx}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{res}\PYG{p}{.}\PYG{n}{cnt}\PYG{o}{=}\PYG{n}{cnt}\PYG{o}{+}\PYG{n}{b}\PYG{p}{.}\PYG{n}{cnt}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{node}\PYG{+w}{ }\PYG{k}{operator}\PYG{o}{\PYGZhy{}}\PYG{p}{(}\PYG{n}{node}\PYG{+w}{ }\PYG{n}{b}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{node}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{        }\PYG{c+c1}{// Implement}
+\PYG{+w}{        }\PYG{n}{res}\PYG{p}{.}\PYG{n}{l\PYGZus{}idx}\PYG{o}{=}\PYG{n}{l\PYGZus{}idx}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{.}\PYG{n}{r\PYGZus{}idx}\PYG{o}{=}\PYG{n}{r\PYGZus{}idx}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{res}\PYG{p}{.}\PYG{n}{cnt}\PYG{o}{=}\PYG{n}{cnt}\PYG{o}{\PYGZhy{}}\PYG{n}{b}\PYG{p}{.}\PYG{n}{cnt}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{l\PYGZus{}idx}\PYG{o}{=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{r\PYGZus{}idx}\PYG{o}{=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// 여기서 idx는 본인의 idx를 말한다.}
+\PYG{+w}{    }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{cnt}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{PST}\PYG{p}{\PYGZob{}}
+\PYG{k}{public}\PYG{o}{:}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{NX}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// X\PYGZhy{}wise root idx.}
+\PYG{+w}{    }\PYG{n}{node}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{N\PYGZus{}node}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// All node datas}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{cur\PYGZus{}x}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{s\PYGZus{}cnt}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// s\PYGZus{}cnt는 현재까지 사용한 node의 개수}
+\PYG{+w}{    }\PYG{n}{PST}\PYG{p}{()\PYGZob{}\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{push}\PYG{p}{(}\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{y}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{c+c1}{// Pusing one element generate anothor root.}
+\PYG{+w}{        }\PYG{c+c1}{// Regardless of the val x.}
+\PYG{+w}{        }\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{cur\PYGZus{}x}\PYG{p}{]}\PYG{o}{=}\PYG{n}{s\PYGZus{}cnt}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{update\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{cur\PYGZus{}x}\PYG{p}{],(}\PYG{n}{cur\PYGZus{}x}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{o}{?}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{:}\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{cur\PYGZus{}x}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{]),}
+\PYG{+w}{                    }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{Y\PYGZus{}RANGE}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{n}{y}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{cur\PYGZus{}x}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{node}\PYG{+w}{ }\PYG{n}{query}\PYG{p}{(}\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{x1}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{x2}\PYG{p}{,}
+\PYG{+w}{               }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{y1}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{y2}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{x1}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{x2}\PYG{p}{],}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{Y\PYGZus{}RANGE}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{n}{y1}\PYG{p}{,}\PYG{n}{y2}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{x2}\PYG{p}{],}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{Y\PYGZus{}RANGE}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{n}{y1}\PYG{p}{,}\PYG{n}{y2}\PYG{p}{)}
+\PYG{+w}{                }\PYG{o}{\PYGZhy{}}\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg\PYGZus{}root}\PYG{p}{[}\PYG{n}{x1}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{],}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{Y\PYGZus{}RANGE}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{n}{y1}\PYG{p}{,}\PYG{n}{y2}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{clear}\PYG{p}{()\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{s\PYGZus{}cnt}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{node}\PYG{p}{();}
+\PYG{+w}{        }\PYG{n}{cur\PYGZus{}x}\PYG{o}{=}\PYG{n}{s\PYGZus{}cnt}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{private}\PYG{o}{:}
+\PYG{+w}{    }\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n}{update\PYGZus{}seg}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{prev\PYGZus{}idx}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{l}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{r}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t\PYGZus{}idx}\PYG{p}{,}
+\PYG{+w}{                    }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{val}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{c+c1}{// previous segtree의 idx도 같이 관리. (첫 번째 layer의 경우는 \PYGZhy{}1)}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{l}\PYG{o}{==}\PYG{n}{r}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{            }\PYG{c+c1}{// Implement. 과거의 데이터에 덮어씌우는 것은 이부분이 유일.}
+\PYG{+w}{            }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{cnt}\PYG{o}{=}\PYG{n}{val}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k}{if}\PYG{p}{(}\PYG{n}{prev\PYGZus{}idx}\PYG{o}{!=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{=}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{+}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{prev\PYGZus{}idx}\PYG{p}{];}
+\PYG{+w}{            }\PYG{k}{return}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{mid}\PYG{o}{=}\PYG{p}{(}\PYG{n}{l}\PYG{o}{+}\PYG{n}{r}\PYG{p}{)}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}idx}\PYG{o}{\PYGZlt{}=}\PYG{n}{mid}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{o}{=}\PYG{n}{s\PYGZus{}cnt}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{o}{=}\PYG{p}{(}\PYG{n}{prev\PYGZus{}idx}\PYG{o}{==}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{?}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{:}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{prev\PYGZus{}idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{p}{);}
+\PYG{+w}{            }\PYG{n}{update\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{p}{,(}\PYG{n}{prev\PYGZus{}idx}\PYG{o}{==}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{?}\PYG{l+m+mi}{\PYGZhy{}1}
+\PYG{+w}{                }\PYG{o}{:}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{prev\PYGZus{}idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{p}{),}\PYG{n}{l}\PYG{p}{,}\PYG{n}{mid}\PYG{p}{,}\PYG{n}{t\PYGZus{}idx}\PYG{p}{,}\PYG{n}{val}\PYG{p}{);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{k}{else}\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{o}{=}\PYG{n}{s\PYGZus{}cnt}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{o}{=}\PYG{p}{(}\PYG{n}{prev\PYGZus{}idx}\PYG{o}{==}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{?}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{:}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{prev\PYGZus{}idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{p}{);}
+\PYG{+w}{            }\PYG{n}{update\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{p}{,(}\PYG{n}{prev\PYGZus{}idx}\PYG{o}{==}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{o}{?}\PYG{l+m+mi}{\PYGZhy{}1}
+\PYG{+w}{                }\PYG{o}{:}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{prev\PYGZus{}idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{p}{),}\PYG{n}{mid}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{r}\PYG{p}{,}\PYG{n}{t\PYGZus{}idx}\PYG{p}{,}\PYG{n}{val}\PYG{p}{);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{c+c1}{// 아래의 덧셈연산은 l\PYGZus{}idx와 r\PYGZus{}idx를 보존하기 위한 방법}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{o}{!=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{=}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{+}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{p}{];}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{o}{!=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{=}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{]}\PYG{o}{+}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{p}{];}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{node}\PYG{+w}{ }\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{idx}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{l}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{r}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t\PYGZus{}l}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t\PYGZus{}r}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}l}\PYG{o}{\PYGZlt{}=}\PYG{n}{l}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{r}\PYG{o}{\PYGZlt{}=}\PYG{n}{t\PYGZus{}r}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{];}
+\PYG{+w}{        }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{mid}\PYG{o}{=}\PYG{p}{(}\PYG{n}{l}\PYG{o}{+}\PYG{n}{r}\PYG{p}{)}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{node}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}l}\PYG{o}{\PYGZlt{}=}\PYG{n}{mid}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{o}{!=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{)}
+\PYG{+w}{            }\PYG{n}{res}\PYG{o}{=}\PYG{n}{res}\PYG{o}{+}\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{l\PYGZus{}idx}\PYG{p}{,}\PYG{n}{l}\PYG{p}{,}\PYG{n}{mid}\PYG{p}{,}\PYG{n}{t\PYGZus{}l}\PYG{p}{,}\PYG{n}{t\PYGZus{}r}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{t\PYGZus{}r}\PYG{o}{\PYGZgt{}}\PYG{n}{mid}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{o}{!=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{)}
+\PYG{+w}{            }\PYG{n}{res}\PYG{o}{=}\PYG{n}{res}\PYG{o}{+}\PYG{n}{find\PYGZus{}seg}\PYG{p}{(}\PYG{n}{seg}\PYG{p}{[}\PYG{n}{idx}\PYG{p}{].}\PYG{n}{r\PYGZus{}idx}\PYG{p}{,}\PYG{n}{mid}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{r}\PYG{p}{,}\PYG{n}{t\PYGZus{}l}\PYG{p}{,}\PYG{n}{t\PYGZus{}r}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{n}{PST}\PYG{+w}{ }\PYG{n}{p}\PYG{p}{;}
+\end{Verbatim}

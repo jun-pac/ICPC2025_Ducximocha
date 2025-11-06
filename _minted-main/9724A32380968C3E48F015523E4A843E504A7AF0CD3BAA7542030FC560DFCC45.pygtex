@@ -1,0 +1,59 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// LCP[1] + ... + LCP[N\PYGZhy{}1] 은 모든 중복되는 substring의 개수}
+
+\PYG{c+c1}{// result \PYGZlt{}\PYGZhy{} result + max(0,prev\PYGZhy{}LCP[i])}
+\PYG{c+c1}{// prev \PYGZlt{}\PYGZhy{} LCP[i]}
+\PYG{c+c1}{// 이러면 중복되는 substring의 종류를 얻는다.}
+
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}bits/stdc++.h\PYGZgt{}}
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{c+cp}{\PYGZsh{}define N 200000}
+\PYG{n}{string}\PYG{+w}{ }\PYG{n}{s}\PYG{p}{;}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{[}\PYG{n}{N}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{temp\PYGZus{}g}\PYG{p}{[}\PYG{n}{N}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// g[i]는 정렬 전 i번째 접미사가 접근하는 group ordering}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{t}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// 전역변수}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{sa}\PYG{p}{[}\PYG{n}{N}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{order}\PYG{p}{[}\PYG{n}{N}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// inv\PYGZus{}sa==order of suffix array}
+
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{LCP}\PYG{p}{[}\PYG{n}{N}\PYG{p}{];}
+
+\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n+nf}{compare}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{j}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{g}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{==}\PYG{n}{g}\PYG{p}{[}\PYG{n}{j}\PYG{p}{])}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{n}{t}\PYG{p}{]}\PYG{o}{\PYGZlt{}}\PYG{n}{g}\PYG{p}{[}\PYG{n}{j}\PYG{o}{+}\PYG{n}{t}\PYG{p}{];}
+\PYG{+w}{    }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{\PYGZlt{}}\PYG{n}{g}\PYG{p}{[}\PYG{n}{j}\PYG{p}{];}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+c1}{// SA[i]는 정렬된 suffix중 i번째의 것이 원래의 suffix중 몇 번째냐}
+\PYG{c+c1}{// order[i]는 SA[i]의 역함수인데, i번째의 원래 suffix가 정렬되면 몇 번째로 들어가냐.}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{suffix\PYGZus{}sort}\PYG{p}{(}\PYG{k}{const}\PYG{+w}{ }\PYG{n}{string}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{=}\PYG{n}{s}\PYG{p}{.}\PYG{n}{size}\PYG{p}{();}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{sa}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{i}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{s}\PYG{p}{[}\PYG{n}{i}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// 대소관계만 중요}
+\PYG{+w}{    }\PYG{n}{g}\PYG{p}{[}\PYG{n}{n}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{temp\PYGZus{}g}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{n}{t}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{t}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{t}\PYG{o}{\PYGZlt{}\PYGZlt{}=}\PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{sort}\PYG{p}{(}\PYG{n}{sa}\PYG{p}{,}\PYG{n}{sa}\PYG{o}{+}\PYG{n}{n}\PYG{p}{,}\PYG{n}{compare}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{            }\PYG{c+c1}{// sa[i]는 앞에서 2t번째로 정렬된 것을 의미하는 듯 함.}
+\PYG{+w}{            }\PYG{c+c1}{// temp\PYGZus{}g는 지금까지 밝혀진 정보로도 확실히 크다면 +1,}
+\PYG{+w}{            }\PYG{c+c1}{// 아니면 이전 값과 동일.}
+\PYG{+w}{            }\PYG{n}{temp\PYGZus{}g}\PYG{p}{[}\PYG{n}{sa}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]]}\PYG{o}{=}\PYG{n}{temp\PYGZus{}g}\PYG{p}{[}\PYG{n}{sa}\PYG{p}{[}\PYG{n}{i}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{]]}\PYG{o}{+}\PYG{n}{compare}\PYG{p}{(}\PYG{n}{sa}\PYG{p}{[}\PYG{n}{i}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{],}\PYG{n}{sa}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{g}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{temp\PYGZus{}g}\PYG{p}{[}\PYG{n}{i}\PYG{p}{];}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{order}\PYG{p}{[}\PYG{n}{sa}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]]}\PYG{o}{=}\PYG{n}{i}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}lcp}\PYG{p}{(}\PYG{k}{const}\PYG{+w}{ }\PYG{n}{string}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{s}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{=}\PYG{n}{s}\PYG{p}{.}\PYG{n}{size}\PYG{p}{();}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{j}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{if}\PYG{p}{(}\PYG{n}{order}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{            }\PYG{c+c1}{// i는 이제 원래 idx임.}
+\PYG{+w}{            }\PYG{c+c1}{// sa[order[i]]와 sa[order[i]\PYGZhy{}1]의 최대 일치 \PYGZhy{}\PYGZgt{} LCP[order[i]]}
+\PYG{+w}{            }\PYG{c+c1}{// 원래 idx i의 정렬했을 때 바로 앞의 suffix의 원래 idx가 pre임.}
+\PYG{+w}{            }\PYG{c+c1}{// LCP는 늘어나는 건 많이 늘어날 수 있지만, LCP가 줄어드는 일은 최대 1만큼만.}
+\PYG{+w}{            }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{pre}\PYG{o}{=}\PYG{n}{sa}\PYG{p}{[}\PYG{n}{order}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{];}
+\PYG{+w}{            }\PYG{k}{while}\PYG{p}{(}\PYG{n}{max}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{n}{j}\PYG{p}{,}\PYG{n}{pre}\PYG{o}{+}\PYG{n}{j}\PYG{p}{)}\PYG{o}{\PYGZlt{}}\PYG{n}{n}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n}{s}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{n}{j}\PYG{p}{]}\PYG{o}{==}\PYG{n}{s}\PYG{p}{[}\PYG{n}{pre}\PYG{o}{+}\PYG{n}{j}\PYG{p}{])}\PYG{+w}{ }\PYG{n}{j}\PYG{o}{++}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{LCP}\PYG{p}{[}\PYG{n}{order}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]]}\PYG{o}{=}\PYG{n}{j}\PYG{p}{;}
+\PYG{+w}{            }\PYG{n}{j}\PYG{o}{=}\PYG{n}{max}\PYG{p}{(}\PYG{n}{j}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

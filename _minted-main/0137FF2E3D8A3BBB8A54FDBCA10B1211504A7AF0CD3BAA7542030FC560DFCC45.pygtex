@@ -1,0 +1,26 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{// nCr}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}bits/stdc++.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}define MOD 1000000007}
+\PYG{c+cp}{\PYGZsh{}define N 200000}
+
+\PYG{k}{using}\PYG{+w}{ }\PYG{k}{namespace}\PYG{+w}{ }\PYG{n+nn}{std}\PYG{p}{;}
+
+\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n}{fact}\PYG{p}{[}\PYG{n}{N}\PYG{p}{],}\PYG{+w}{ }\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{N}\PYG{p}{];}
+
+\PYG{k+kt}{void}\PYG{+w}{ }\PYG{n+nf}{fill\PYGZus{}fact}\PYG{p}{()\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{fact}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)}\PYG{+w}{ }\PYG{n}{fact}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{fact}\PYG{p}{[}\PYG{n}{i}\PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{]}\PYG{o}{*}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{n}{MOD}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{fill}\PYG{p}{(}\PYG{n}{f\PYGZus{}inv}\PYG{p}{,}\PYG{n}{f\PYGZus{}inv}\PYG{o}{+}\PYG{n}{N}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{k}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{30}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{k}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{N}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{*}\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{\PYGZpc{}}\PYG{n}{MOD}\PYG{p}{;}
+\PYG{+w}{            }\PYG{k}{if}\PYG{p}{((}\PYG{n}{MOD}\PYG{l+m+mi}{\PYGZhy{}2}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{\PYGZlt{}\PYGZlt{}}\PYG{p}{(}\PYG{l+m+mi}{29}\PYG{o}{\PYGZhy{}}\PYG{n}{k}\PYG{p}{)))}\PYG{+w}{ }\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{*}\PYG{n}{fact}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{\PYGZpc{}}\PYG{n}{MOD}\PYG{p}{;}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{long}\PYG{+w}{ }\PYG{k+kt}{long}\PYG{+w}{ }\PYG{n+nf}{nCr}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{r}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{p}{((}\PYG{n}{fact}\PYG{p}{[}\PYG{n}{n}\PYG{p}{]}\PYG{o}{*}\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{r}\PYG{p}{])}\PYG{o}{\PYGZpc{}}\PYG{n}{MOD}\PYG{p}{)}\PYG{o}{*}\PYG{n}{f\PYGZus{}inv}\PYG{p}{[}\PYG{n}{n}\PYG{o}{\PYGZhy{}}\PYG{n}{r}\PYG{p}{]}\PYG{o}{\PYGZpc{}}\PYG{n}{MOD}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
